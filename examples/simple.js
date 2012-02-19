@@ -11,3 +11,7 @@ m.debug = true;
 m.getProject("project_id", function(project, err) {
 		 console.log(project.getCreator());
 	     });
+
+m.getProjects(function(projects, err) {
+		 console.log(projects.length + "projects found");
+	     });
