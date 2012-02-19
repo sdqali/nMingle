@@ -1,0 +1,20 @@
+{
+    "name" : "nMingle",
+    "description" : "A simple client for Mingle's RESP API.",
+    "keywords" : ["mingle", "thoughtworks", "api"],
+    "homepage" : "https://github.com/sdqali/nMingle",
+    "version" : "0.0.1",
+    "author" : "Sadique Ali <sadiqalikm@gmail.com> (http://blog.sdqali.in)",
+    "main" : "./lib/mingle",
+    "directories" : {
+	"lib": "./lib",
+	"examples": "./examples"
+    },
+    "repository" : {
+	"type" : "git",
+	"url" : "https://github.com/sdqali/nMingle.git"
+    },
+    "dependencies" : {
+	"xml2js" : ">=0.1.13"
+    }
+}
