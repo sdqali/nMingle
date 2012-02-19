@@ -1,6 +1,6 @@
 {
     "name" : "nMingle",
-    "description" : "A simple client for Mingle's RESP API.",
+    "description" : "A simple client for Mingle's REST API.",
     "keywords" : ["mingle", "thoughtworks", "api"],
     "homepage" : "https://github.com/sdqali/nMingle",
     "version" : "0.0.1",
