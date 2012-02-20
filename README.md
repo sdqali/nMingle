@@ -1,4 +1,4 @@
-node-mingle
+nMingle
 ===========
 
 This is a node.js library for talking to [Mingle](http://www.thoughtworks-studios.com/mingle-agile-project-management) - the Agile project management tool from ThoughtWorks Studios.
