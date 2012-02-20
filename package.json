@@ -3,7 +3,7 @@
     "description" : "A simple client for Mingle's REST API.",
     "keywords" : ["mingle", "thoughtworks", "api"],
     "homepage" : "https://github.com/sdqali/nMingle",
-    "version" : "0.0.1",
+    "version" : "0.0.2",
     "author" : "Sadique Ali <sadiqalikm@gmail.com> (http://blog.sdqali.in)",
     "main" : "./lib/mingle",
     "directories" : {
