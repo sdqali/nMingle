@@ -36,7 +36,12 @@ vows
 					 }),
 		      'api base should have app context': function(mingle) {
 			  assert.equal(mingle.api_base, "/foobar/api/v2/");
+		      },
+		      'dont bother with app context specified as /': function() {
+			  var mingle = new Mingle({
+						      appContext: "/"
+						  });
+			  assert.equal(mingle.api_base, "/api/v2/");
 		      }
-		      
 		  }
 	      }).export(module);
