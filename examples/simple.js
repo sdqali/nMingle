@@ -6,12 +6,12 @@ var options ={
     password: "password"
 };
 
-var m = new Mingle(options);
+var m = Mingle.create(options);
 m.debug = true;
 m.getProject("project_id", function(project, err) {
-		 console.log(project.getCreator());
+		 console.log(project);
 	     });
 
 m.getProjects(function(projects, err) {
-		 console.log(projects.length + "projects found");
+		 console.log(projects.length,  'projects found');
 	     });
