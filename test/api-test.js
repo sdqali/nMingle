@@ -10,6 +10,11 @@ vows
 			  var api = new API(null, "example.com", null);
 			  assert.equal(api.host, "example.com");
 		      },
+		      'should know about auth': function() {
+			  var auth =  'Basic ' + new Buffer("username:password").toString('base64');
+			  var api = new API(null, null, auth);
+			  assert.equal(api.auth, auth);
+		      },
 		      'passes options down to request': function() {
 			  var auth =  'Basic ' + new Buffer("username:password").toString('base64');
 			  var passedOptions = {
