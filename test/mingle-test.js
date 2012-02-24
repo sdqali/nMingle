@@ -136,10 +136,10 @@ vows
 						  });
 			  var callback = function(projects, error) {
 			      assert.equal(projects.length, 2);
-			      assert.equal(projects[0].getCreator, new Project().getCreator);
+			      assert(projects[0] instanceof Project);
 			      assert.equal(projects[0].name, "Foo");
 			      assert.equal(projects[0].identifier, "foo");
-			      assert.equal(projects[1].getCreator, new Project().getCreator);
+			      assert(projects[1] instanceof Project);
 			      assert.equal(projects[1].name, "Bar");
 			      assert.equal(projects[1].identifier, "bar");
 			  };
@@ -173,7 +173,7 @@ vows
 			  };
 
 			  var callback = function(project, error) {
-			      assert.equal(project.getCreator, new Project().getCreator);
+			      assert(project instanceof Project);
 			      assert.equal(project.name, 'Foo');
 			      assert.equal(project.identifier, 'foo');
 			  };

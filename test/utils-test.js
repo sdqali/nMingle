@@ -7,7 +7,7 @@ vows
     .addBatch({
 		  'sync attributes': {
 		      topic: Utils,
-		      'copies fields from first and second': function(utils) {
+		      'knows about fields from first and second': function(utils) {
 			  var first = {
 			      foo: "Foo"
 			  };
@@ -20,7 +20,17 @@ vows
 			  assert.equal(third.zoom, "Zoom");
 			  assert.equal(third.foo, "Foo");
 		      },
-		      'does not alter first or second': function(utils) {
+		      'returns an object of the first type': function(utils) {
+			  var first = function() {
+			  };
+
+			  var second = function() {
+			  };
+
+			  var third = utils.syncAttributes(new first(), new second());
+			  assert(third instanceof first);
+		      },
+		      'does not alter the second': function(utils) {
 			  var first = {
 			      zoom: "Zoom"
 			  };
@@ -30,7 +40,6 @@ vows
 			  };
 
 			  var third = utils.syncAttributes(first, second);
-			  assert.equal(first.zoom, "Zoom");
 			  assert.equal(second.zoom, "Not Zoom");
 		      },
 		      'keeps the second objects fields in case of duplicates': function(utils) {
