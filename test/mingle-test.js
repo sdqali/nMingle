@@ -4,6 +4,7 @@ var sinon = require('sinon');
 var Mingle = require(__dirname + '/../lib/mingle');
 var API = require(__dirname + '/../lib/api');
 var Project = require(__dirname + '/../lib/project');
+var Utils = require(__dirname + '/../lib/utils');
 
 vows
     .describe('Mingle')
@@ -65,19 +66,32 @@ vows
 			  mingle.getProjects(function(){});
 		      },
 
-		      'should pass the callback through the correct converter': function() {
+		      'should create a list of projects': function() {
+			  var fakeCallback = function(projects, error){
+			      assert.equal(projects.length, 2);
+			      assert(projects[0] instanceof Project);
+			      assert(projects[1] instanceof Project);
+			  };
 			  var mockApi = {
-			      get: function(){}
+			      get: function(path, callback){
+				  callback({
+					       project: [
+						   {
+						       name: 'Foo',
+						       identifier: 'foo'
+						   },
+						   {
+						       name: 'Bar',
+						       identifier: 'bar'
+						   }
+					       ]
+					   }, null);
+			      }
 			  };
 			  var mingle = new Mingle({
 						      api: mockApi,
 						      appContext: "/some_context"
 						  });
-			  var fakeCallback = function(){
-			  };
-			  mingle.projectsConverter = function(callback) {
-			      assert.equal(callback, fakeCallback);
-			  };
 			  mingle.getProjects(fakeCallback);
 		      }
 		  },
@@ -111,9 +125,107 @@ vows
 			  mingle.getProject("foobar", function(){});
 		      },
 
-		      'should pass the callback through the correct converter': function() {
+		      'should create a project': function() {
+			  var fakeCallback = function(project, error){
+			      assert.equal(project.name, "Foo");
+			      assert.equal(project.identifier, "foo");
+			      assert(project instanceof Project);
+			  };
 			  var mockApi = {
-			      get: function(){}
+			      get: function(path, callback){
+				  callback({
+					       name: 'Foo',
+					       identifier: 'foo'
+					   }, null);
+			      }
+			  };
+			  var mingle = new Mingle({
+						      api: mockApi,
+						      appContext: "/some_context"
+						  });
+			  mingle.getProject("foo", fakeCallback);
+		      }
+		  },
+
+		  'creating a project': {
+		      'should call POST on api': function() {
+			  var stubMethod = sinon.stub();
+			  var mockApi = {
+			      post: stubMethod
+			  };
+
+			  var mingle = new Mingle({
+						      api: mockApi,
+						      appContext: "dont care"
+						  });
+			  var prj = {
+			      name: "Foo Bar",
+			      identifier: "foo_bar"
+			  };
+			  mingle.createProject(prj, function() {});
+			  assert(stubMethod.called);
+		      },
+
+		      'should pass the correct path to api': function() {
+			  var mockApi = {
+			      post: function(path) {
+				  assert.equal(path, "/some_context/api/v2/projects.xml");
+			      }
+			  };
+
+			  var mingle = new Mingle({
+						      api: mockApi,
+						      appContext: "/some_context"
+						  });
+			  mingle.createProject("dont care", function(){});
+		      },
+
+		      'should pass the correct data to api': function() {
+			  var prj = {
+			      name: "Foo Bar",
+			      identifier: "foo_bar",
+			      description: "Awesome project",
+			      template: false,
+			      email_address: "jdoe@company.com",
+			      email_sender_name: "John Doe",
+			      date_format: "%d %D %Y",
+			      time_zone: "Singapore",
+			      precision: 4
+			  };
+
+			  var mockApi = {
+			      post: function(path, data) {
+				  assert.equal(data, Utils.toXml(prj));
+			      }
+			  };
+
+			  var mingle = new Mingle({
+						      api: mockApi,
+						      appContext: "/some_context"
+						  });
+			  mingle.createProject(prj);
+		      },
+
+		      'needs at least name and identifier to create a project': function() {
+			  var prj = {
+			      rubbish: "Rubbish",
+			      more_useless: "More Rubbish"
+			  };
+
+			  var mingle = new Mingle({
+						      api: {},
+						      appContext: "/some_context"
+						  });
+
+			  var callback = function(project, error) {
+			      assert.equal(error.message, "At least name and identifier need to be provided to create a project");
+			  };
+			  mingle.createProject(prj, callback);
+		      },
+
+		      'should pass the callback through projects converter': function() {
+			  var mockApi = {
+			      post: function(){}
 			  };
 			  var mingle = new Mingle({
 						      api: mockApi,
@@ -124,7 +236,7 @@ vows
 			  mingle.projectConverter = function(callback) {
 			      assert.equal(callback, fakeCallback);
 			  };
-			  mingle.getProject("", fakeCallback);
+			  mingle.createProject("dont care", fakeCallback);
 		      }
 		  },
 
