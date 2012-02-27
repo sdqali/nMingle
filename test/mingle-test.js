@@ -151,7 +151,8 @@ vows
 		      'should call POST on api': function() {
 			  var stubMethod = sinon.stub();
 			  var mockApi = {
-			      post: stubMethod
+			      post: stubMethod,
+			      get: function() {}
 			  };
 
 			  var mingle = new Mingle({
@@ -170,7 +171,8 @@ vows
 			  var mockApi = {
 			      post: function(path) {
 				  assert.equal(path, "/some_context/api/v2/projects.xml");
-			      }
+			      },
+			      get: function(){}
 			  };
 
 			  var mingle = new Mingle({
@@ -196,7 +198,8 @@ vows
 			  var mockApi = {
 			      post: function(path, data) {
 				  assert.equal(data, Utils.toXml(prj));
-			      }
+			      },
+			      get: function() {}
 			  };
 
 			  var mingle = new Mingle({
@@ -223,20 +226,29 @@ vows
 			  mingle.createProject(prj, callback);
 		      },
 
-		      'should pass the callback through projects converter': function() {
-			  var mockApi = {
-			      post: function(){}
+		      'should get the project created': function() {
+			  var options = {
+			      name: 'Foo',
+			      identifier: 'foo'
+			  };
+			  var fakeCallback = function(project, error){
+			      assert.equal(project.name, "Foo");
+			      assert.equal(project.identifier, "foo");
+			      assert(project instanceof Project);
+			  };
+			  var api = {
+			      get: function(){},
+			      post: function(path, data, callback){
+				  callback();
+			      }
 			  };
 			  var mingle = new Mingle({
-						      api: mockApi,
+						      api: api,
 						      appContext: "/some_context"
 						  });
-			  var fakeCallback = function(){
-			  };
-			  mingle.projectConverter = function(callback) {
-			      assert.equal(callback, fakeCallback);
-			  };
-			  mingle.createProject("dont care", fakeCallback);
+			  var getProject = sinon.spy(mingle, "getProject");
+			  mingle.createProject(options, fakeCallback);
+			  assert(getProject.calledOnce);
 		      }
 		  },
 
