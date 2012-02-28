@@ -12,7 +12,7 @@ __TODO__
 * Comments
 * Events
 * Execute MQL
-* Versions
+* ~~Versions~~
 * ~~Projects~~
 * Properties
 * SCM Configurations

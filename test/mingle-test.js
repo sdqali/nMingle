@@ -39,31 +39,36 @@ vows
 
 		  'getting projects': {
 		      'should call GET on api': function() {
-			  var stubMethod = sinon.stub();
 			  var mockApi = {
-			      get: stubMethod
+			      get: function(){}
 			  };
+
+			  var stubGet = sinon.stub(mockApi, "get", function(path, callback){});
 
 			  var mingle = new Mingle({
 						      api: mockApi,
 						      appContext: "dont care"
 						  });
 			  mingle.getProjects();
-			  assert(stubMethod.called);
+			  assert(stubGet.calledOnce);
 		      },
 
 		      'should pass the correct path to api': function() {
 			  var mockApi = {
 			      get: function(path) {
-				  assert.equal(path, "/some_context/api/v2/projects.xml");
 			      }
 			  };
+
+			  var stubGet = sinon.stub(mockApi, "get", function(path, callback){
+						      assert.equal(path, "/some_context/api/v2/projects.xml");
+						  });
 
 			  var mingle = new Mingle({
 						      api: mockApi,
 						      appContext: "/some_context"
 						  });
 			  mingle.getProjects(function(){});
+			  assert(stubGet.calledOnce);
 		      },
 
 		      'should create a list of projects': function() {
@@ -98,34 +103,36 @@ vows
 
 		  'getting a project': {
 		      'should call GET on api': function() {
-			  var stubMethod = sinon.stub();
 			  var mockApi = {
-			      get: stubMethod
+			      get: function(){}
 			  };
 
+			  var stubGet = sinon.stub(mockApi, "get", function(path, callback){});
 			  var mingle = new Mingle({
 						      api: mockApi,
 						      appContext: "dont care"
 						  });
 			  mingle.getProject();
-			  assert(stubMethod.called);
+			  assert(stubGet.calledOnce);
 		      },
 
 		      'should pass the correct path to api': function() {
 			  var mockApi = {
 			      get: function(path) {
-				  assert.equal(path, "/some_context/api/v2/projects/foobar.xml");
 			      }
 			  };
-
+			  var stubGet = sinon.stub(mockApi, "get", function(path, callback){
+						      assert.equal(path, "/some_context/api/v2/projects/foobar.xml");
+						  });
 			  var mingle = new Mingle({
 						      api: mockApi,
 						      appContext: "/some_context"
 						  });
 			  mingle.getProject("foobar", function(){});
+			  assert(stubGet.calledOnce);
 		      },
 
-		      'should create a project': function() {
+		      'should generate a project': function() {
 			  var fakeCallback = function(project, error){
 			      assert.equal(project.name, "Foo");
 			      assert.equal(project.identifier, "foo");
@@ -149,12 +156,12 @@ vows
 
 		  'creating a project': {
 		      'should call POST on api': function() {
-			  var stubMethod = sinon.stub();
 			  var mockApi = {
-			      post: stubMethod,
+			      post: function() {},
 			      get: function() {}
 			  };
 
+			  var stubPost = sinon.stub(mockApi, "post", function(path, callback){});
 			  var mingle = new Mingle({
 						      api: mockApi,
 						      appContext: "dont care"
@@ -164,22 +171,29 @@ vows
 			      identifier: "foo_bar"
 			  };
 			  mingle.createProject(prj, function() {});
-			  assert(stubMethod.called);
+			  assert(stubPost.calledOnce);
 		      },
 
 		      'should pass the correct path to api': function() {
 			  var mockApi = {
 			      post: function(path) {
-				  assert.equal(path, "/some_context/api/v2/projects.xml");
 			      },
 			      get: function(){}
 			  };
 
+			  var stubPost = sinon.stub(mockApi, "post", function(path, callback){
+							assert.equal(path, "/some_context/api/v2/projects.xml");
+						   });
 			  var mingle = new Mingle({
 						      api: mockApi,
 						      appContext: "/some_context"
 						  });
-			  mingle.createProject("dont care", function(){});
+			  var prj = {
+			      name: "Foo Bar",
+			      identifier: "foo_bar"
+			  };
+			  mingle.createProject(prj, function(){});
+			  assert(stubPost.calledOnce);
 		      },
 
 		      'should pass the correct data to api': function() {
@@ -246,9 +260,63 @@ vows
 						      api: api,
 						      appContext: "/some_context"
 						  });
-			  var getProject = sinon.spy(mingle, "getProject");
+			  var getProject = sinon.stub(mingle, "getProject");
 			  mingle.createProject(options, fakeCallback);
 			  assert(getProject.calledOnce);
+		      }
+		  },
+		  'version info': {
+		      'should call GET on api': function() {
+			  var stubMethod = sinon.stub();
+			  var mockApi = {
+			      get: function(){} //stubMethod
+			  };
+
+			  var stubGet = sinon.stub(mockApi, "get", function(path, callback){});
+
+			  var mingle = new Mingle({
+						      api: mockApi,
+						      appContext: "dont care"
+						  });
+			  mingle.info();
+			  assert(stubGet.calledOnce);
+		      },
+
+		      'should pass the correct path to api': function() {
+			  var mockApi = {
+			      get: function(path) {
+			      }
+			  };
+
+			  var stubGet = sinon.stub(mockApi, "get", function(path){
+						      assert.equal(path, "/some_context/api/v2/info.xml");
+						  });
+			  var mingle = new Mingle({
+						      api: mockApi,
+						      appContext: "/some_context"
+						  });
+			  mingle.info();
+			  assert(stubGet.called);
+		      },
+
+		      'should pass the callback down': function() {
+			  var mockApi = {
+			      get: function(path) {
+			      }
+			  };
+
+			  var dummyCallback = function(info) {
+			  };
+
+			  var stubGet = sinon.stub(mockApi, "get", function(path, callback){
+						       assert.equal(callback, dummyCallback);
+						   });
+			  var mingle = new Mingle({
+						      api: mockApi,
+						      appContext: "/some_context"
+						  });
+			  mingle.info(dummyCallback);
+			  assert(stubGet.called);
 		      }
 		  },
 

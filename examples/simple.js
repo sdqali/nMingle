@@ -23,3 +23,7 @@ m.createProject({name: "Foobar", identifier: "foobar"}, function(project, err) {
 			console.log(project.getCreator());
 		    }
 		});
+
+m.info(function(info, error){
+	   console.log(info);
+       });
