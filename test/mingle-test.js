@@ -197,7 +197,7 @@ vows
 
 			  var mockApi = {
 			      post: function(path, data) {
-				  assert.equal(data, Utils.toXml(prj));
+				  assert.equal(data, Utils.toXml({project: prj}));
 			      },
 			      get: function() {}
 			  };

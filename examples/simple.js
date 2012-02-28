@@ -15,3 +15,11 @@ m.getProject("project_id", function(project, err) {
 m.getProjects(function(projects, err) {
 		 console.log(projects.length,  'projects found');
 	     });
+
+m.createProject({name: "Foobar", identifier: "foobar"}, function(project, err) {
+		    if(!project) {
+			console.log(err.message);
+		    } else {
+			console.log(project.getCreator());
+		    }
+		});
