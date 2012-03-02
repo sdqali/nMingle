@@ -75,6 +75,54 @@ vows
 			      project.getCards(dummyCallback);
 			      assert(stubGet.calledOnce);
 			  }
+		      },
+
+		      'getting a specific card': {
+			  'should call GET on API' : function(){
+			      var mockApi = {
+				  get: function(){}
+			      };
+
+			      var stubGet = sinon.stub(mockApi, "get", function(){});
+			      var project = new Project({}, mockApi);
+			      project.getCard(1);
+			      assert(stubGet.calledOnce);
+			  },
+
+			  'should pass path for a card': function(){
+			      var mockApi = {
+				  get: function(){}
+			      };
+
+			      var stubGet = sinon.stub(mockApi, "get", function(path, callback){
+							   assert.equal(path, "/api/v2/projects/foo/cards/234.xml");
+						       });
+			      var project = new Project({identifier: "foo"}, mockApi);
+			      project.getCard(234);
+			      assert(stubGet.calledOnce);
+			  },
+
+			  'should get a single card': function(){
+			      var mockApi = {
+				  get: function(){}
+			      };
+
+			      var dummyCallback = function(card, error) {
+				  assert(card instanceof Card);
+				  assert.equal(card.name, "Card 1");
+				  assert.equal(card.number, 1);
+			      };
+
+			      var stubGet = sinon.stub(mockApi, "get", function(path, callback){
+							   callback({
+									name: "Card 1",
+									number: 1
+								    }, null);
+						       });
+			      var project = new Project({}, mockApi);
+			      project.getCard(1, dummyCallback);
+			      assert(stubGet.calledOnce);
+			  }
 		      }
 		  }
 	      }).export(module);
