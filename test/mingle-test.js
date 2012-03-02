@@ -22,20 +22,6 @@ vows
 			  assert.equal(mingle.api, "some object");
 		      }
 		  },
-		  'app context': {
-		      topic:  new Mingle({
-					     appContext: "/foobar"
-					 }),
-		      'api base should have app context': function(mingle) {
-			  assert.equal(mingle.api_base, "/foobar/api/v2/");
-		      },
-		      'dont bother with app context specified as "/"': function() {
-			  var mingle = new Mingle({
-						      appContext: "/"
-						  });
-			  assert.equal(mingle.api_base, "/api/v2/");
-		      }
-		  },
 
 		  'getting projects': {
 		      'should call GET on api': function() {
@@ -60,12 +46,11 @@ vows
 			  };
 
 			  var stubGet = sinon.stub(mockApi, "get", function(path, callback){
-						      assert.equal(path, "/some_context/api/v2/projects.xml");
+						      assert.equal(path, "/api/v2/projects.xml");
 						  });
 
 			  var mingle = new Mingle({
-						      api: mockApi,
-						      appContext: "/some_context"
+						      api: mockApi
 						  });
 			  mingle.getProjects(function(){});
 			  assert(stubGet.calledOnce);
@@ -94,8 +79,7 @@ vows
 			      }
 			  };
 			  var mingle = new Mingle({
-						      api: mockApi,
-						      appContext: "/some_context"
+						      api: mockApi
 						  });
 			  mingle.getProjects(fakeCallback);
 		      }
@@ -122,11 +106,10 @@ vows
 			      }
 			  };
 			  var stubGet = sinon.stub(mockApi, "get", function(path, callback){
-						      assert.equal(path, "/some_context/api/v2/projects/foobar.xml");
+						      assert.equal(path, "/api/v2/projects/foobar.xml");
 						  });
 			  var mingle = new Mingle({
-						      api: mockApi,
-						      appContext: "/some_context"
+						      api: mockApi
 						  });
 			  mingle.getProject("foobar", function(){});
 			  assert(stubGet.calledOnce);
@@ -147,8 +130,7 @@ vows
 			      }
 			  };
 			  var mingle = new Mingle({
-						      api: mockApi,
-						      appContext: "/some_context"
+						      api: mockApi
 						  });
 			  mingle.getProject("foo", fakeCallback);
 		      }
@@ -182,11 +164,10 @@ vows
 			  };
 
 			  var stubPost = sinon.stub(mockApi, "post", function(path, callback){
-							assert.equal(path, "/some_context/api/v2/projects.xml");
+							assert.equal(path, "/api/v2/projects.xml");
 						   });
 			  var mingle = new Mingle({
-						      api: mockApi,
-						      appContext: "/some_context"
+						      api: mockApi
 						  });
 			  var prj = {
 			      name: "Foo Bar",
@@ -217,8 +198,7 @@ vows
 			  };
 
 			  var mingle = new Mingle({
-						      api: mockApi,
-						      appContext: "/some_context"
+						      api: mockApi
 						  });
 			  mingle.createProject(prj);
 		      },
@@ -230,8 +210,7 @@ vows
 			  };
 
 			  var mingle = new Mingle({
-						      api: {},
-						      appContext: "/some_context"
+						      api: {}
 						  });
 
 			  var callback = function(project, error) {
@@ -257,8 +236,7 @@ vows
 			      }
 			  };
 			  var mingle = new Mingle({
-						      api: api,
-						      appContext: "/some_context"
+						      api: api
 						  });
 			  var getProject = sinon.stub(mingle, "getProject");
 			  mingle.createProject(options, fakeCallback);
@@ -289,11 +267,10 @@ vows
 			  };
 
 			  var stubGet = sinon.stub(mockApi, "get", function(path){
-						      assert.equal(path, "/some_context/api/v2/info.xml");
+						      assert.equal(path, "/api/v2/info.xml");
 						  });
 			  var mingle = new Mingle({
-						      api: mockApi,
-						      appContext: "/some_context"
+						      api: mockApi
 						  });
 			  mingle.info();
 			  assert(stubGet.called);
@@ -312,8 +289,7 @@ vows
 						       assert.equal(callback, dummyCallback);
 						   });
 			  var mingle = new Mingle({
-						      api: mockApi,
-						      appContext: "/some_context"
+						      api: mockApi
 						  });
 			  mingle.info(dummyCallback);
 			  assert(stubGet.called);
@@ -323,8 +299,7 @@ vows
 		  'projects converter': {
 		      'should generate projects': function() {
 			  var mingle = new Mingle({
-						      api: "some object",
-						      appContext: "/some_context"
+						      api: "some object"
 						  });
 			  var callback = function(projects, error) {
 			      assert.equal(projects.length, 2);
@@ -355,8 +330,7 @@ vows
 		  'project converter': {
 		      'should generate a project': function() {
 			  var mingle = new Mingle({
-						      api: "some object",
-						      appContext: "/some_context"
+						      api: "some object"
 						  });
 
 			  var p = {

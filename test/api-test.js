@@ -18,11 +18,25 @@ vows
 			  var api = new API(null, null, auth);
 			  assert.equal(api.auth, auth);
 		      },
+
+		      'app context': {
+			  topic:  new API(https, "", null, "/foobar"),
+			  'should have app context': function(api) {
+			      assert.equal(api.appContext, "/foobar");
+			  },
+			  'should be \'\' for /': function(api) {
+			      assert.equal(new API(https, "", null, "/").appContext, "");
+			  },
+			  'should be \'\' for not given': function(api) {
+			      assert.equal(new API(https, "", null).appContext, "");
+			  }
+		      },
+
 		      'passes options down to request': function() {
 			  var auth =  'Basic ' + new Buffer("username:password").toString('base64');
 			  var passedOptions = {
 			      host: "example.com",
-			      path: "/",
+			      path: "/app_context/",
 			      method: "GET",
 			      headers: {
 				  "Accept"         : "application/xml",
@@ -46,7 +60,7 @@ vows
 							       }
 							   };
 						       });
-			  var api = new API(https, "example.com", auth);
+			  var api = new API(https, "example.com", auth, "/app_context");
 			  api.get("/", function() {});
 			  assert(stubRequest.calledOnce);
 		      }
